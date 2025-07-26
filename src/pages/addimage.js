@@ -1,70 +1,49 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import {
-    Box, Container, Button
-} from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Image from 'next/image';
-import image from "../../public/invertedlogo1.jpg";
+"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import Upload from '@/components/upload';
-import axios from 'axios';
-
-const getTheme = () => createTheme({
-    palette: {
-        mode: 'dark',
-        background: {
-            default: '#121212',
-        },
-        text: {
-            primary: '#ffffff',
-        },
-    },
-});
-
+import Upload from "@/components/upload";
+import image from "../../public/invertedlogo1.jpg";
 
 const Settings = () => {
-    const router = useRouter();
-    const [windowWidth, setWindowWidth] = useState("");
+  const router = useRouter();
+  const [windowWidth, setWindowWidth] = useState("");
 
-    useEffect(() => {
-        function handleResize() {
-            setWindowWidth(window.innerWidth);
-        }
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [windowWidth]);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const [darkMode] = useState(false);
+  return (
+    <div className="bg-gray-900 text-white min-h-screen">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 w-full bg-black z-50 ">
+        <Image src={image} alt="Logo" width={125} height={70} priority className="rounded-lg" />
+      </div>
 
-    const theme = getTheme(darkMode);
+      {/* Content Section */}
+      <div className="pt-32 px-6">
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Upload Component */}
+          <Upload />
 
-
-    return (
-        <ThemeProvider theme={theme}>
-            <div style={{ position: "fixed", width: "100%", backgroundColor: "black" }}>
-                <Image
-                    src={image}
-                    alt="Logo"
-                    width={125}
-                    height={70}
-                    priority
-                    style={{ borderRadius: "20px" }}
-                />
-            </div>
-
-            <Box sx={{ display: 'flex', backgroundColor: theme.palette.background.default, minHeight: '100vh', pt: 13 }}>
-                <Container sx={{ pt: 4, pb: 8 }}>
-                    <Upload />
-                    <div style={{ display: "flex", justifyContent: "center", width: "100%", paddingTop: "30px" }}>
-                        <Button variant="contained" color="primary" sx={{ ml: 'auto', br: "10px" }} onClick={() => { router.push("/homepage") }}>Continue To LinkHub</Button>
-                    </div>
-                </Container>
-            </Box>
-        </ThemeProvider>
-    );
+          {/* Button Section */}
+          <div className="flex justify-center pt-8">
+            <button
+              onClick={() => router.push("/homepage")}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all"
+            >
+              Continue To LinkHub
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
-
 
 export default Settings;

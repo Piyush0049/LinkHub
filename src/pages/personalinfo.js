@@ -1,142 +1,133 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import {
-    Box, Grid, Typography, Paper, Container, Switch as MuiSwitch,
-    TextField, Button, Avatar
-} from '@mui/material';
-import { parseCookies } from 'nookies';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import Image from 'next/image';
-import image from "../../public/invertedlogo1.jpg";
+"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import axios from 'axios';
-
-const getTheme = () => createTheme({
-    palette: {
-        mode: 'dark',
-        background: {
-            default: '#121212',
-        },
-        text: {
-            primary: '#ffffff',
-        },
-    },
-});
-
-const Item = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(3),
-    textAlign: 'left',
-    color: theme.palette.text.primary,
-    background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, #424242 0%, #616161 100%)'
-        : 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
-    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.3s, box-shadow 0.3s',
-    '&:hover': {
-        transform: 'scale(1.05)',
-        boxShadow: '0 0 30px rgba(0,0,0,0.2)',
-    },
-}));
-
+import axios from "axios";
+import { parseCookies } from "nookies";
+import image from "../../public/invertedlogo1.jpg";
 
 export async function getServerSideProps(context) {
-    try {
-        const cookies = parseCookies(context);
+  try {
+    const cookies = parseCookies(context);
 
-        const res = await axios.post('http://localhost:3000/api/userroute', { token: cookies.token });
-        return {
-            props: {
-                data: res.data.data,
-            },
-        }
-    } catch (error) {
-        console.error(error);
-        return {
-            props: {
-                data: null,
-            },
-        };
-    }
+    const res = await axios.post("http://localhost:3000/api/userroute", { token: cookies.token });
+    return {
+      props: {
+        data: res.data.data,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        data: null,
+      },
+    };
+  }
 }
 
+const Settings = ({ data }) => {
+  const router = useRouter();
+  const [windowWidth, setWindowWidth] = useState("");
+  const [bio, setBio] = useState(data?.bio || "");
 
-const Settings = ({data}) => {
-    const router = useRouter();
-    const [windowWidth, setWindowWidth] = useState("");
-
-    useEffect(() => {
-        function handleResize() {
-            setWindowWidth(window.innerWidth);
-        }
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [windowWidth]);
-
-    const [darkMode, setDarkMode] = useState(false);
-
-    const save = async() => {
-        const res = await axios.put("/api/addbio", { bio : bio })
-        console.log(res);
-        router.push("/addimage");
-        localStorage.removeItem("image");
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
     };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const theme = getTheme(darkMode);
+  const save = async () => {
+    const res = await axios.put("/api/addbio", { bio });
+    console.log(res);
+    router.push("/addimage");
+    localStorage.removeItem("image");
+  };
 
-    const [bio, setbio] = useState(data.bio);
+  return (
+    <div className="bg-gray-900 text-white min-h-screen">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 w-full bg-black z-50">
+        <Image src={image} alt="Logo" width={125} height={70} priority className="rounded-lg" />
+      </div>
 
-    return (
-        <ThemeProvider theme={theme}>
-            <div style={{ position: "fixed", width: "100%", backgroundColor: "black" }}>
-                <Image
-                    src={image}
-                    alt="Logo"
-                    width={125}
-                    height={70}
-                    priority
-                    style={{ borderRadius: "20px" }}
-                />
+      {/* Content Section */}
+      <div className="pt-24 px-6">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 p-8 rounded-lg shadow-lg hover:shadow-2xl">
+            {/* Profile Info */}
+            <div className="flex items-center space-x-4 mb-6">
+              <img
+                src={data?.profileImage || "/placeholder.jpg"}
+                alt="Profile"
+                className="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h1 className={`font-bold ${windowWidth > 582 ? "text-2xl" : "text-xl"}`}>{data?.name}</h1>
+                <p className={`text-gray-400 ${windowWidth > 582 ? "text-base" : "text-sm"}`}>{data?.username}</p>
+              </div>
             </div>
 
-            <Box sx={{ display: 'flex', backgroundColor: theme.palette.background.default, minHeight: '100vh', pt: 13 }}>
-                <Container sx={{ pt: 4, pb: 8 }}>
-                    <Grid container spacing={4}>
-                        <Grid item xs={12}>
-                            <Item>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                    <Avatar src={data.profileImage} sx={{ width: 64, height: 64, mr: 2 }} />
-                                    <Box>
-                                        <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: windowWidth > 582 ? null : "20px", }}>{data.name}</Typography>
-                                        <Typography variant="subtitle1" style={{ fontSize: windowWidth > 582 ? null : "14px", }}>{data.username}</Typography>
-                                    </Box>
-                                </Box>
-                                <Typography variant="h6" sx={{ mb: 2 }}>Personal Information</Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <TextField label="Name" fullWidth margin="normal" defaultValue={data.name} disabled="true" />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField label="Username" fullWidth margin="normal" defaultValue={data.username} disabled="true" />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField label="Email" fullWidth margin="normal" defaultValue={data.email} disabled="true" />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField label="Bio" fullWidth margin="normal" defaultValue={data.bio} multiline rows={2} onChange={(e) => { setbio(e.target.value) }} />
-                                    </Grid>
-                                </Grid>
-                                <div style={{ display: "flex", justifyContent: "center", width: "100%", paddingTop: "30px" }}>
-                                    <Button variant="contained" color="primary" sx={{ ml: 'auto', br: "10px" }} onClick={save}>Save & continue</Button>
-                                </div>
-                            </Item>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Box>
-        </ThemeProvider>
-    );
+            <h2 className="text-lg font-semibold mb-4">Personal Information</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  value={data?.name}
+                  disabled
+                  className="w-full bg-gray-800 text-gray-400 p-2 rounded-lg border border-gray-700 focus:outline-none cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Username</label>
+                <input
+                  type="text"
+                  value={data?.username}
+                  disabled
+                  className="w-full bg-gray-800 text-gray-400 p-2 rounded-lg border border-gray-700 focus:outline-none cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  value={data?.email}
+                  disabled
+                  className="w-full bg-gray-800 text-gray-400 p-2 rounded-lg border border-gray-700 focus:outline-none cursor-not-allowed"
+                />
+              </div>
+              <div className="col-span-1 sm:col-span-2">
+                <label className="block text-sm font-medium mb-2">Bio</label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  rows={3}
+                  className="w-full bg-gray-800 text-white p-2 rounded-lg border border-gray-700 focus:ring focus:ring-gray-600"
+                />
+              </div>
+            </div>
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={save}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all"
+              >
+                Save & Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-
 export default Settings;
+
+
+
+
+

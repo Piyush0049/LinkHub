@@ -42,7 +42,7 @@ export async function getServerSideProps(context) {
     }
 }
 
-const Post = ({ post, likedPosts, bookmarked, Userdetails }) => {
+const Post = ({ post, likedPosts, bookmarked, Userdetails, setLoading }) => {
     const [hoverheart, setHoverheart] = useState(false);
     const [hovercomment, setHovercomment] = useState(false);
     const [hoverbookmark, setHoverbookmark] = useState(false);
@@ -132,7 +132,10 @@ const Post = ({ post, likedPosts, bookmarked, Userdetails }) => {
             <div style={{ padding: '20px 0', width: '95%', margin: '0 auto', display: 'flex', flexDirection: 'initial' }}>
                 <p style={{ fontSize: '13px', color: 'white', textAlign: "left" }}>{post.content}</p>
             </div>
+            <div className='w-full flex justify-center'>
             <img src={post.mediaUrl} alt='' style={{ width: '95%', borderRadius: '10px' }} />
+            </div>
+            
             <div style={{ display: 'flex', justifyContent: "space-between", gap: '18px', width: '91%', margin: '0 auto', padding: '20px 0px', alignItems: "center" }}>
                 <div style={{ display: "flex", gap: "15px" }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -243,7 +246,7 @@ const Post = ({ post, likedPosts, bookmarked, Userdetails }) => {
     );
 };
 
-const Homepage = ({ posts, likedPosts, bookmarked, Userdetails, allusers, notificationsbyusers, suggestedUsers }) => {
+const Homepage = ({ posts, likedPosts, bookmarked, Userdetails, allusers, notificationsbyusers, suggestedUsers  }) => {
     const { data } = useContext(DataContext);
     if (!Array.isArray(posts) || posts.length === 0) {
         return <p>Loading...</p>

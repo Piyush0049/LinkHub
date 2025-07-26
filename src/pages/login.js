@@ -2,172 +2,136 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import axios from 'axios';
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
 import Image from "next/image";
-import image from "../../public/logo.png"
+import image from "../../public/logo.png";
 
 export default function Signuppage() {
-    
-    const router = useRouter();
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-    });
+  const router = useRouter();
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
-    const [windowWidth, setWindowWidth] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
+  const login = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/api/loginroute", {
+        email: user.email,
+        password: user.password,
+      });
 
-        handleResize();
+      if (response.status === 201) {
+        router.push("/homepage");
+      } else {
+        console.error("Signup error:", response.data);
+        window.alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      window.alert("An error occurred during signup.");
+    }
+  };
 
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
-    const [showPassword, setShowPassword] = useState(false);
-
-    const login = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('/api/loginroute', {
-                email: user.email,
-                password: user.password,
-            });
-
-            if (response.status === 201) {
-                router.push("/homepage")
-            } else {
-                console.error('Signup error:', response.data);
-                window.alert(response.data.message);
-            }
-        } catch (error) {
-            console.error('Error during signup:', error);
-            window.alert('An error occurred during signup.');
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-gray-900 via-gray-700 to-blue-900">
+      <Image
+        src={image}
+        alt="Logo"
+        width={190}
+        height={130}
+        priority
+        className="rounded-lg shadow-lg"
+      />
+      <h1 className="text-white text-xl md:text-3xl font-bold mt-5 mb-8 text-center font-poppins animate-fade-in">
+        Welcome back to LinkHub!
+      </h1>
+      <form
+        onSubmit={login}
+        className="flex flex-col bg-white rounded-lg shadow-md p-6 md:p-8 w-80 md:w-[450px] animate-slide-in"
+      >
+        <TextField
+          label="Email"
+          variant="outlined"
+          type="email"
+          value={user.email}
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          style={{marginBottom:"15px"}}
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          type={showPassword ? "text" : "password"}
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          style={{marginBottom:"20px"}}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <button
+          type="submit"
+          className="bg-green-600 text-white text-lg py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 font-poppins animate-pulse"
+        >
+          Login
+        </button>
+      </form>
+      <h3 className="text-white text-sm md:text-base mt-5 font-poppins animate-fade-in">
+        Do not have an account?{" "}
+        <Link
+          href="/signup"
+          className="text-yellow-300 underline hover:text-yellow-400"
+        >
+          Sign up Now!
+        </Link>
+      </h3>
+      <style jsx>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
-    };
-
-    return (
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            background: "linear-gradient(315deg, #242424 0%, #4D4D4D 50%, #0A1A4F 100%)",
-            animation: "backgroundFade 10s infinite"
-        }}>
-            <Image
-                src={image}
-                alt="Vercel Logo"
-                width={190}
-                height={130}
-                priority
-                style={{ borderRadius: "20px", boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)' }}
-            />
-            <h1 style={{
-                padding: "20px",
-                fontSize: windowWidth > 611 ? "26px" : 18,
-                color: "white",
-                textShadow: "2px 2px 8px rgba(0, 0, 0, 0.3)",
-                animation: "fadeIn 3s",
-                fontFamily: 'Poppins, sans-serif'
-            }}><b>Welcome back to LinkHub!</b></h1>
-            <form onSubmit={login} style={{
-                display: "flex",
-                flexDirection: "column",
-                fontSize: "25px",
-                border: "2px solid white",
-                padding: "30px",
-                borderRadius: "10px",
-                background: "rgba(255, 255, 255, 0.87)",
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
-                animation: "slideIn 1s ease-out",
-                width: windowWidth > 465 ? "450px" : "350px",
-            }}>
-                <TextField
-                    label="Email"
-                    variant="outlined"
-                    type="email"
-                    value={user.email}
-                    onChange={(e) => setUser({ ...user, email: e.target.value })}
-                    style={{ marginBottom: "15px" }}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    type={showPassword ? "text" : "password"}
-                    value={user.password}
-                    onChange={(e) => setUser({ ...user, password: e.target.value })}
-                    style={{ marginBottom: "15px" }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        )
-                    }}
-                />
-                <button type="submit" style={{
-                    backgroundColor: "#4CAF50",
-                    color: "white",
-                    fontSize: "20px",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "background-color 0.3s",
-                    animation: "pulse 2s infinite",
-                    fontFamily: 'Poppins, sans-serif'
-                }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#45a049"}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
-                >Login</button>
-            </form>
-            <h3 style={{
-                marginTop: "20px",
-                color: "white",
-                animation: "fadeIn 4s",
-                fontSize: windowWidth > 611 ? "16px" : 15,
-                fontFamily: 'Poppins, sans-serif'
-            }}>
-                Do not have an account?<Link href="/signup" style={{
-                    color: "#FFFC69",
-                    textDecoration: "underline",
-                    marginLeft: "5px"
-                }}>Sign up Now!</Link>
-            </h3>
-
-            <style jsx>{`
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                @keyframes slideIn {
-                    from { transform: translateY(-20px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-                @keyframes pulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                    100% { transform: scale(1); }
-                }
-            `}</style>
-        </div>
-    );
+        @keyframes slide-in {
+          from {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+      `}</style>
+    </div>
+  );
 }
