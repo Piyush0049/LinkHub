@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react';
 
-// Create a context with default values
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
