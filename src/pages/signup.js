@@ -27,14 +27,8 @@ export default function Signuppage() {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-
-    // Set initial width
     handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Clean up event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
