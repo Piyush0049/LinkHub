@@ -49,16 +49,12 @@ const Settings = ({ data }) => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Fixed Header */}
       <div className="fixed top-0 left-0 w-full bg-black z-50">
         <Image src={image} alt="Logo" width={125} height={70} priority className="rounded-lg" />
       </div>
-
-      {/* Content Section */}
       <div className="pt-24 px-6">
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 p-8 rounded-lg shadow-lg hover:shadow-2xl">
-            {/* Profile Info */}
             <div className="flex items-center space-x-4 mb-6">
               <img
                 src={data?.profileImage || "/placeholder.jpg"}
