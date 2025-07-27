@@ -20,14 +20,11 @@ export default async function handler(req, res) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Remove post ID from user's bookmarked and posts arrays
         user.bookmarked = user.bookmarked.filter(book => book.toString() !== id.toString());
         user.posts = user.posts.filter(post => post.toString() !== id.toString());
 
-        // Save the user object after updating bookmarks and posts
         await user.save();
 
-        // Find the post and delete it
         const post = await Post.findById(id);
 
         if (!post) {
