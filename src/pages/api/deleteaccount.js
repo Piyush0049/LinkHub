@@ -23,7 +23,6 @@ export default async function handler(req, res) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Remove user's bookmarks from posts
         const deletedBookmarks = deletedUser.bookmarked;
         for (let i = 0; i < deletedBookmarks.length; i++) {
             const postId = deletedBookmarks[i];
