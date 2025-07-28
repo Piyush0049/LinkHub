@@ -30,7 +30,6 @@ export default async function handler(req, res) {
 
         user.profileImage = image;
 
-        // Update profile image in user posts in parallel
         await Promise.all(user.posts.map(async (postId) => {
             const post = await Post.findById(postId);
             if (post && post.authordetails) {
