@@ -40,7 +40,6 @@ export default async function handler(req, res) {
 
         await user.save();
 
-        // Fetch the updated user to include the new profile image
         const updatedUser = await User.findById(data._id);
 
         return res.status(200).json({ success: true, message: "User updated successfully", user: updatedUser });
