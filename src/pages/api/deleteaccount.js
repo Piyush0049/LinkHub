@@ -18,7 +18,6 @@ export default async function handler(req, res) {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decodedToken._id;
 
-        // Delete the user
         const deletedUser = await User.findById(userId);
         if (!deletedUser) {
             return res.status(404).json({ message: 'User not found' });
