@@ -20,18 +20,14 @@ const Settings = () => {
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Fixed Header */}
       <div className="fixed top-0 left-0 w-full bg-black z-50 ">
         <Image src={image} alt="Logo" width={125} height={70} priority className="rounded-lg" />
       </div>
 
-      {/* Content Section */}
       <div className="pt-32 px-6">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Upload Component */}
           <Upload />
 
-          {/* Button Section */}
           <div className="flex justify-center pt-8">
             <button
               onClick={() => router.push("/homepage")}
