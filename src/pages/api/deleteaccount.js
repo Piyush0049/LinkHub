@@ -33,11 +33,9 @@ export default async function handler(req, res) {
             }
         }
 
-        // Delete user's posts and update other users' bookmarks
         const deletedPosts = deletedUser.posts;
         for (let i = 0; i < deletedPosts.length; i++) {
             const post = await Post.findById(deletedPosts[i]);
-                // Remove deleted user from other users' bookmarks
                 const bookedUsers = post.allbookmarked;
                 for (let y = 0; y < bookedUsers.length; y++) {
                     const user = await User.findById(bookedUsers[y]);
@@ -46,7 +44,6 @@ export default async function handler(req, res) {
                         await user.save();
                     }
                 }
-                // Delete the post itself
                 await Post.findByIdAndDelete(deletedPosts[i]);
         }
     
