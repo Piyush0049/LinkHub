@@ -15,11 +15,9 @@ export default async function handler(req, res) {
         const me = await User.findById(verify._id);
         const followeduser = await User.findById(identity);
 
-        // Unfollowing logic
         me.following = me.following.filter(following => following.toString() !== followeduser._id.toString());
         followeduser.followers = followeduser.followers.filter(follower => follower.toString() !== me._id.toString());
 
-        // Remove follow notification
         followeduser.notifications = followeduser.notifications.filter(notification => 
             !(notification.user.toString() === me.toString() && notification.status === "followed")
         );
