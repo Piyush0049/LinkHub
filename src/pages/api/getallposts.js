@@ -35,7 +35,6 @@ export default async function handler(req, res) {
         const bookmarked = [];
 
 
-        // We need to use async function inside the forEach loop
         for (const post of allposts) {
             if (post.author.toString() === verify._id.toString()) {
                 post.authordetails = user;
