@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
         const notificationsbyusers = await Promise.all(
             user.notifications.map(async notification => {
-                const notifyuser = await User.findById(notification.user); // You need to fetch user details here
+                const notifyuser = await User.findById(notification.user);
                 return { notifyuser, status: notification.status, createdAt: notification.createdAt };
             })
         );
